@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
+import pe.com.upc.backend.Entities.Rol;
 //import pe.com.upc.backend.entities.Rol;
 
 import java.time.LocalDate;
@@ -28,6 +29,5 @@ public class UsuarioDTO extends RepresentationModel<UsuarioDTO> {
     private String correo;
     private String contrasena;
     private LocalDate fechaRegistro;
-    //private Rol rol;
-    /*private Long rolId;*/
+    private Rol rol;
 }
