@@ -35,7 +35,7 @@ public class Usuario {
     @Column(name = "Fecha_Registro")
     private LocalDate fechaRegistro;
 
-    //@ManyToOne  //(optional = true)
-    //@JoinColumn(name = "Rol_ID"/*, referencedColumnName = "ID"*/)
-    //private Rol rol;
+    @ManyToOne  //(optional = true)
+    @JoinColumn(name = "Rol_ID"/*, referencedColumnName = "ID"*/)
+    private Rol rol;
 }
