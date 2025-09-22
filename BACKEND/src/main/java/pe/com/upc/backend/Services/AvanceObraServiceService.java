@@ -1,17 +1,18 @@
 package pe.com.upc.backend.Services;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pe.com.upc.backend.DTOs.AvanceObraDTO;
 import pe.com.upc.backend.Entities.AvanceObra;
-import pe.com.upc.backend.Interfaces.IAvanceObra;
+import pe.com.upc.backend.Interfaces.IAvanceObraService;
 import pe.com.upc.backend.Repositories.AvanceObraRepository;
 
 import java.util.List;
 
 @Service
-public class AvanceObraService implements IAvanceObra {
+public class AvanceObraServiceService implements IAvanceObraService {
     @Autowired private AvanceObraRepository avanceObraRepository;
     @Autowired private ModelMapper modelMapper;
 
@@ -40,7 +41,7 @@ public class AvanceObraService implements IAvanceObra {
     }
 
     @Override
-    @jakarta.transaction.Transactional
+    @Transactional
     public AvanceObraDTO actualizar(AvanceObraDTO dto) {
         return avanceObraRepository.findById(dto.getIdAvanceObra())
                 .map(existing -> {
@@ -53,7 +54,7 @@ public class AvanceObraService implements IAvanceObra {
     }
 
     @Override
-    @jakarta.transaction.Transactional
+    @Transactional
     public void eliminar(Long id) {
         if (avanceObraRepository.existsById(id)) {
             avanceObraRepository.deleteById(id);
