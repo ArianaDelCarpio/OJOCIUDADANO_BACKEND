@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pe.com.upc.backend.Entities.ObraPublica;
 import pe.com.upc.backend.Entities.Usuario;
 
 
@@ -16,5 +17,6 @@ public class DenunciaDTO {
     private String Titulo;
     private String Descripcion;
     private Boolean Estado;
-    private Long usuarioI;
+    private Usuario usuario;
+    private ObraPublica obraPublica;
 }

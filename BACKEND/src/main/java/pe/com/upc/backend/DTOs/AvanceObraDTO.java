@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pe.com.upc.backend.Entities.ObraPublica;
 
 import java.time.LocalDate;
 @Setter
@@ -15,5 +16,5 @@ public class AvanceObraDTO{
     private LocalDate FechaReporte;
     private String PorcentajeDeAvance;
     private String Descripcion;
-
+    private ObraPublica obrapublica;
 }

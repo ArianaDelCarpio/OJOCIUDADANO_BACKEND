@@ -26,7 +26,7 @@ public class Evidencia {
     @Column(/*nullable = false*/)
     private String urlArchivo;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "denuncia_id", referencedColumnName = "ID")
-    private Denuncia denuncia;*/
+    @ManyToOne
+    @JoinColumn(name = "denuncia_id")
+    private Denuncia denuncia;
 }

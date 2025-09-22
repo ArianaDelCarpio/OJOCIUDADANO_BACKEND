@@ -17,7 +17,7 @@ public class InversionController {
     @Autowired
     private IInversionService inversionService;
 
-    @GetMapping("/inversion")
+    @GetMapping("/inversiones")
     public ResponseEntity<List<InversionDTO>> listar() {
         return ResponseEntity.ok(inversionService.listar());
     }

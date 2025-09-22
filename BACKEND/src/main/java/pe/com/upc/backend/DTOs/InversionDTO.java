@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pe.com.upc.backend.Entities.ObraPublica;
 
 import java.time.LocalDate;
 
@@ -17,5 +18,5 @@ public class InversionDTO {
     private String MontoTotal;
     private String FuenteFinanciamiento;
     private LocalDate FechaAprobacion;
-
+    private ObraPublica obrapublica;
 }

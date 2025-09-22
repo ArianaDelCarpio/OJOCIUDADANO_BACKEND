@@ -18,16 +18,16 @@ public class Inversion {
     @Id
     @Column(name= "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long IdInversion;
+    private Long idInversion;
     @Column(name= "Monto_total", length = 100)
-    private String MontoTotal;
+    private String montoTotal;
     @Column(name = "Fuente Financiamiento", length = 100)
-    private String FuenteFinanciamiento;
+    private String fuenteFinanciamiento;
     @Column(name= "Fecha Aprobacion")
-    private LocalDate FechaAprobacion;
+    private LocalDate fechaAprobacion;
 
-    //@ManyToOne
-    //@JoinColumn(name="ObraPublica Id",referencedColumnName = "ID")
-    //private ObraPublica obrapublica;
+    @ManyToOne
+    @JoinColumn(name="ObraPublica_ID",referencedColumnName = "ID")
+    private ObraPublica obrapublica;
 
 }

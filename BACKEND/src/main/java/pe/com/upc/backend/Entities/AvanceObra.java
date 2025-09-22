@@ -18,15 +18,15 @@ public class AvanceObra {
     @Id
     @Column(name= "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long IdAvanceObra;
+    private Long idAvanceObra;
     @Column(name= "Fecha Reporte", length = 100)
-    private LocalDate FechaReporte;
+    private LocalDate fechaReporte;
     @Column(name = "Porcentaje de Avance", length = 100)
-    private String PorcentajeDeAvance;
+    private String porcentajeDeAvance;
     @Column(name= "Descripcion", length = 100)
-    private String Descripcion;
+    private String descripcion;
 
-   // @ManyToOne
-    //@JoinColumn(name="Obra Publica Id")
-    //private ObraPublica obrapublica;
+    @ManyToOne
+    @JoinColumn(name="ObraPublica_ID")
+    private ObraPublica obrapublica;
 }
