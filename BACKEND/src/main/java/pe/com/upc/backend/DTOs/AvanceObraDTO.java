@@ -4,15 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pe.com.upc.backend.Entities.Denuncia;
 
+import java.time.LocalDate;
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvidenciaDTO {
-    private Long id;
-    private String tipo;
-    private String urlArchivo;
-    private Denuncia denuncia;
+public class AvanceObraDTO{
+    private Long IdAvanceObra;
+    private LocalDate FechaReporte;
+    private String PorcentajeDeAvance;
+    private String Descripcion;
+
 }
