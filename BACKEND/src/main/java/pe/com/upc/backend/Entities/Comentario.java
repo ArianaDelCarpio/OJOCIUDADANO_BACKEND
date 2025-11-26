@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pe.com.upc.backend.security.entities.User;
 
 import java.time.LocalDate;
 
@@ -26,7 +27,7 @@ public class Comentario {
 
     @ManyToOne
     @JoinColumn(name = "Usuario_ID")
-    private Usuario usuario;
+    private User usuario;
 
     @ManyToOne
     @JoinColumn(name = "ObraPublica_ID")

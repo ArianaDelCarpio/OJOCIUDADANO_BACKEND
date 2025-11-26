@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pe.com.upc.backend.security.entities.User;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class Denuncia {
 
     @ManyToOne
     @JoinColumn(name="Usuario_id",referencedColumnName = "ID")
-    private Usuario usuario;
+    private User usuario;
 
     @ManyToOne
     @JoinColumn(name="ObraPublica_ID",referencedColumnName = "ID")

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pe.com.upc.backend.Entities.Usuario;
+import pe.com.upc.backend.security.entities.User;
 
 import java.time.LocalDate;
 
@@ -17,5 +17,5 @@ public class NotificacionDTO {
     private String mensaje;
     private LocalDate fechaEnvio;
     private boolean leida;
-    private Usuario usuario;
+    private User usuario;
 }
