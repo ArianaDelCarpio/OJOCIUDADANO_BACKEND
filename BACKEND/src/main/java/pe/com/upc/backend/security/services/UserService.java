@@ -4,24 +4,35 @@ package pe.com.upc.backend.security.services;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import pe.com.upc.backend.security.dtos.UserDTO;
+import pe.com.upc.backend.security.entities.Role;
 import pe.com.upc.backend.security.entities.User;
+import pe.com.upc.backend.security.repositories.RoleRepository;
 import pe.com.upc.backend.security.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Transactional
-    public void save(User user) {
-        userRepository.save(user);
+    public User save(User user) {
+        Role rolDefault = roleRepository.findByName("ROLE_CIUDADANO");
+        if (rolDefault == null) {
+            throw new RuntimeException("Error: El rol ROLE_CIUDADANO no existe en la BD");
+        }
+        user.setRoles(Set.of(rolDefault));
+         return userRepository.save(user);
     }
 
     @Transactional
