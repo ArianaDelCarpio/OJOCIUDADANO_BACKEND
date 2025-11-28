@@ -11,7 +11,7 @@ import pe.com.upc.backend.security.interfaces.IRoleService;
 
 import java.util.List;
 
-@CrossOrigin(origins = "${ip.frontend}", allowCredentials = "true", exposedHeaders = "Authorization") //para cloud
+//@CrossOrigin(origins = "${ip.frontend}", allowCredentials = "true", exposedHeaders = "Authorization") //para cloud
 @RestController
 @RequestMapping("/apiOjoCiudadano/role")
 public class RoleController {

@@ -1,5 +1,8 @@
 package pe.com.upc.backend.security.config;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pe.com.upc.backend.security.filters.JwtRequestFilter;
 import pe.com.upc.backend.security.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.List;
 
 
 @Configuration
@@ -47,10 +52,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // deshabilitar CSRF ya que no es necesario para una API REST
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                                 // Login y registro público
                         .requestMatchers("/apiOjoCiudadano/authenticate").permitAll()
-                        .requestMatchers("/apiOjoCiudadano/user-registrar").permitAll()
+                        .requestMatchers("/apiOjoCiudadano/user/registrar").permitAll()
                         .anyRequest().authenticated()/*.denyAll()*/
                 )
                 .sessionManagement(session -> session
@@ -61,6 +67,30 @@ public class SecurityConfig {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // A. Permitir solo a tu Frontend Angular
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+
+        // B. Permitir todos los métodos HTTP comunes
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // C. Permitir TODAS las cabeceras (Importante para que pase el Authorization)
+        configuration.setAllowedHeaders(List.of("*"));
+
+        // D. Permitir que el navegador exponga la cabecera Authorization (para que Angular la lea si es necesario)
+        configuration.setExposedHeaders(List.of("Authorization"));
+
+        // E. Permitir credenciales
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     //Filter opcional si se desea configurar globalmente el acceso a los endpoints sin anotaciones

@@ -17,7 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 //@CrossOrigin(origins = "${ip.frontend}")
-@CrossOrigin(origins = "${ip.frontend}", allowCredentials = "true", exposedHeaders = "Authorization") //para cloud
+//@CrossOrigin(origins = "${ip.frontend}", allowCredentials = "true", exposedHeaders = "Authorization") //para cloud
 @RestController
 @RequestMapping("/apiOjoCiudadano/user")
 public class UserController {
@@ -27,7 +27,7 @@ public class UserController {
     private PasswordEncoder bcrypt;
 
     @PostMapping("/registrar")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public void createUser(@Valid  @RequestBody User user) {
         String bcryptPassword = bcrypt.encode(user.getPassword());
         user.setPassword(bcryptPassword);
