@@ -3,6 +3,7 @@ package pe.com.upc.backend.security.services;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import pe.com.upc.backend.security.dtos.RoleDTO;
 import pe.com.upc.backend.security.dtos.UserDTO;
 import pe.com.upc.backend.security.entities.Role;
 import pe.com.upc.backend.security.entities.User;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,12 +29,36 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
-        Role rolDefault = roleRepository.findByName("ROLE_CIUDADANO");
-        if (rolDefault == null) {
-            throw new RuntimeException("Error: El rol ROLE_CIUDADANO no existe en la BD");
+        // 1. Preparamos una lista para los roles REALES de la base de datos
+        Set<Role> rolesReales = new HashSet<>();
+
+        // 2. ¿El frontend envió roles? (Caso ADMIN creando usuario)
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            for (Role rolQueVinoDelFront : user.getRoles()) {
+                // Buscamos el rol en la BD por su ID para asegurarnos de que es el objeto real
+                // Si no lo encuentra por ID, intenta buscarlo por nombre
+                Role rolEncontrado = roleRepository.findById(rolQueVinoDelFront.getId())
+                        .orElse(roleRepository.findByName(rolQueVinoDelFront.getName()));
+
+                if (rolEncontrado != null) {
+                    rolesReales.add(rolEncontrado);
+                }
+            }
         }
-        user.setRoles(Set.of(rolDefault));
-         return userRepository.save(user);
+
+        // 3. Si después de todo la lista está vacía (Caso Registro Público), ponemos CIUDADANO
+        if (rolesReales.isEmpty()) {
+            Role rolDefault = roleRepository.findByName("ROLE_CIUDADANO");
+            if (rolDefault != null) {
+                rolesReales.add(rolDefault);
+            }
+        }
+
+        // 4. Asignamos los roles "vivos" (conectados a la BD) al usuario
+        user.setRoles(rolesReales);
+
+        // 5. Guardamos
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -55,24 +81,28 @@ public class UserService {
     }
 
     public UserDTO actualizar(Long id, UserDTO userDTO) {
-        // 1. Buscamos al usuario ANTIGUO en la base de datos (Entidad)
         User usuarioAntiguo = userRepository.findById(id).orElse(null);
 
         if (usuarioAntiguo != null) {
-            // 2. Pasamos los datos del DTO a la Entidad
-            // NO tocamos el password, ni el id, ni la fecha de registro si no queremos
-            usuarioAntiguo.setUsername(userDTO.getUsername());
             usuarioAntiguo.setNombre(userDTO.getNombre());
             usuarioAntiguo.setApellido(userDTO.getApellido());
+            usuarioAntiguo.setUsername(userDTO.getUsername());
 
-            // NOTA: Como userDto NO tiene password, aquí es imposible
-            // que sobrescribas la contraseña con un null o vacío.
-            // La contraseña de usuarioAntiguo sigue siendo la que estaba en BD.
-
-            // 3. Guardamos los cambios en la BD
+            if (userDTO.getRoles() != null && !userDTO.getRoles().isEmpty()) {
+                // Convertimos los DTOs de roles a Entidades Roles
+                Set<Role> nuevosRoles = new HashSet<>();
+                for (RoleDTO rolDto : userDTO.getRoles()) {
+                    // Buscamos el rol real en la BD por su ID o Nombre
+                    Role rolReal = roleRepository.findById(rolDto.getId()).orElse(null);
+                    if (rolReal != null) {
+                        nuevosRoles.add(rolReal);
+                    }
+                }
+                usuarioAntiguo.setRoles(nuevosRoles);
+            }
+            // -------------------------------------
             User usuarioGuardado = userRepository.save(usuarioAntiguo);
-
-            // 4. Convertimos la entidad guardada de vuelta a DTO para responder
+            // Retornar mapeado...
             return modelMapper.map(usuarioGuardado, UserDTO.class);
         }
         return null;
