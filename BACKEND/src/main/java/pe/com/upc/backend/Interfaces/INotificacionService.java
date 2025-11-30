@@ -8,6 +8,6 @@ public interface INotificacionService {
     public  List<NotificacionDTO> listar();
     public NotificacionDTO registrar(NotificacionDTO dto);
     public NotificacionDTO findById(Long id);
-    public NotificacionDTO actualizar(NotificacionDTO notificacionDTO);
+    public NotificacionDTO actualizar(Long id, NotificacionDTO notificacionDTO);
     public void eliminar(Long id);
 }
