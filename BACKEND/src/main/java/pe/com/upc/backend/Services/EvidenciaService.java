@@ -47,13 +47,22 @@ public class EvidenciaService implements IEvidenciaService {
 
     @Transactional
     @Override
-    public EvidenciaDTO actualizar(EvidenciaDTO evidenciaDTO) {
-        return evidenciaRepository.findById(evidenciaDTO.getId())
-                .map(existing -> {
-                    Evidencia updatedEvidencia = modelMapper.map(evidenciaDTO, Evidencia.class);
-                    return modelMapper.map(evidenciaRepository.save(updatedEvidencia), EvidenciaDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Evidencia con ID " + evidenciaDTO.getId() + " no encontrado"));
+    public EvidenciaDTO actualizar(Long id, EvidenciaDTO evidenciaDTO) {
+        // 1. Buscar la evidencia existente
+        Evidencia evidenciaExistente = evidenciaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Evidencia con ID " + id + " no encontrada"));
+
+        // 2. Copiar los datos del DTO a la Entidad
+        modelMapper.map(evidenciaDTO, evidenciaExistente);
+
+        // Aseguramos que el ID no se pierda ni se cambie
+        evidenciaExistente.setId(id); // O setId(id) según tu entidad
+
+        // 3. Guardar
+        Evidencia evidenciaGuardada = evidenciaRepository.save(evidenciaExistente);
+
+        // 4. Retornar DTO
+        return modelMapper.map(evidenciaGuardada, EvidenciaDTO.class);
     }
 
     @Transactional

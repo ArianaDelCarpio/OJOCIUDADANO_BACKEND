@@ -48,13 +48,19 @@ public class NotificacionService implements INotificacionService {
 
     @Transactional
     @Override
-    public NotificacionDTO actualizar(NotificacionDTO notificacionDTO) {
-        return notificacionRepository.findById(notificacionDTO.getId())
-                .map(existing -> {
-                    Notificacion updatedNotificacion = modelMapper.map(notificacionDTO, Notificacion.class);
-                    return modelMapper.map(notificacionRepository.save(updatedNotificacion), NotificacionDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Notificacion con ID " + notificacionDTO.getId() + " no encontrado"));
+    public NotificacionDTO actualizar(Long id, NotificacionDTO notificacionDTO) {
+        Notificacion existingNotificacion = notificacionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Notificacion con ID " + id + " no encontrado"));
+
+        // 2. IMPORTANTE: Mapeamos los datos del DTO SOBRE la entidad existente.
+        // Esto actualiza los campos de 'existingNotificacion' con los valores de 'notificacionDTO'
+        modelMapper.map(notificacionDTO, existingNotificacion);
+
+        // 3. Guardamos la entidad actualizada
+        Notificacion saved = notificacionRepository.save(existingNotificacion);
+
+        // 4. Retornamos el DTO
+        return modelMapper.map(saved, NotificacionDTO.class);
     }
 
     @Transactional

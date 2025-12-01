@@ -40,17 +40,24 @@ public class AvanceObraServiceService implements IAvanceObraService {
                 .orElseThrow(() -> new RuntimeException("AvanceObra con ID " + id + " no encontrado"));
     }
 
-    @Override
     @Transactional
-    public AvanceObraDTO actualizar(AvanceObraDTO dto) {
-        return avanceObraRepository.findById(dto.getIdAvanceObra())
-                .map(existing -> {
-                    AvanceObra e = modelMapper.map(dto, AvanceObra.class);
-                    // conservar el ID de la entidad existente
-                    e.setIdAvanceObra(existing.getIdAvanceObra());
-                    return modelMapper.map(avanceObraRepository.save(e), AvanceObraDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("AvanceObra con ID " + dto.getIdAvanceObra() + " no encontrado"));
+    @Override
+    public AvanceObraDTO actualizar(Long id, AvanceObraDTO avanceObraDTO) {
+        // 1. Buscar
+        AvanceObra avanceExistente = avanceObraRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Avance de Obra con ID " + id + " no encontrado"));
+
+        // 2. Mapear datos nuevos sobre la entidad existente
+        modelMapper.map(avanceObraDTO, avanceExistente);
+
+        // Aseguramos el ID
+        avanceExistente.setIdAvanceObra(id);
+
+        // 3. Guardar
+        AvanceObra avanceGuardado = avanceObraRepository.save(avanceExistente);
+
+        // 4. Retornar
+        return modelMapper.map(avanceGuardado, AvanceObraDTO.class);
     }
 
     @Override

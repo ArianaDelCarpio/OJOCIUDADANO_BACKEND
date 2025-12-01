@@ -1,6 +1,7 @@
 package pe.com.upc.backend.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +35,24 @@ public class DenunciaController {
         return ResponseEntity.ok(denunciaService.findById(id));
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
-    public ResponseEntity<DenunciaDTO> actualizar(@RequestBody DenunciaDTO denunciaDTO) {
-        return ResponseEntity.ok(denunciaService.actualizar(denunciaDTO));
+    public ResponseEntity<DenunciaDTO> actualizar(@PathVariable Long id, @RequestBody DenunciaDTO denunciaDTO) {
+
+        // 1. Validar que el ID del cuerpo coincida con la URL (si viene en el cuerpo)
+        if (denunciaDTO.getIdDenuncia() != null && !id.equals(denunciaDTO.getIdDenuncia())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Llamar al servicio
+        DenunciaDTO actualizado = denunciaService.actualizar(id, denunciaDTO);
+
+        // 3. Manejar caso de no encontrado
+        if (actualizado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

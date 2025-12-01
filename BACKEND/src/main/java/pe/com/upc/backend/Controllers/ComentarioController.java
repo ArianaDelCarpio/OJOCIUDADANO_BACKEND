@@ -2,6 +2,7 @@ package pe.com.upc.backend.Controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class ComentarioController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping("/registar")
+    @PostMapping("/registrar")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR','CIUDADANO')")
     public ResponseEntity<ComentarioDTO> registrar(@RequestBody ComentarioDTO comentarioDTO) {
         return ResponseEntity.ok(comentarioService.registrar(comentarioDTO));
@@ -38,10 +39,25 @@ public class ComentarioController {
     public ResponseEntity<ComentarioDTO> buscarId(@PathVariable Long id) {
         return ResponseEntity.ok(comentarioService.findById(id));   // devuelve DTO según tu service
     }
-    @PutMapping("/actualizar")
+
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
-    public ResponseEntity<ComentarioDTO> actualizar(@RequestBody ComentarioDTO comentarioDTO) {
-        return ResponseEntity.ok(comentarioService.actualizar(comentarioDTO)); // usa entidad según tu service
+    public ResponseEntity<ComentarioDTO> actualizar(@PathVariable Long id, @RequestBody ComentarioDTO comentarioDTO) {
+
+        // 1. Validación: Si el DTO trae ID, debe coincidir con la URL
+        if (comentarioDTO.getId() != null && !id.equals(comentarioDTO.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Llamada al servicio
+        ComentarioDTO actualizado = comentarioService.actualizar(id, comentarioDTO);
+
+        // 3. Manejo de error si no existe
+        if (actualizado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

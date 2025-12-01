@@ -39,16 +39,24 @@ public class InversionService implements IInversionService {
                 .orElseThrow(() -> new RuntimeException("Inversion con ID " + id + " no encontrado"));
 
     }
-    @Override
     @Transactional
-    public InversionDTO actualizar(InversionDTO inversionDTO){
-        return inversionRepository.findById(inversionDTO.getIdInversion())
-                .map(existing -> {
-                    Inversion updatedInversion = modelMapper.map(inversionDTO, Inversion.class);
-                    return modelMapper.map(inversionRepository.save(updatedInversion), InversionDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Rol con ID " + inversionDTO.getIdInversion() + " no encontrado"));
+    @Override
+    public InversionDTO actualizar(Long id, InversionDTO inversionDTO) {
+        // 1. Buscar la inversión existente
+        Inversion inversionExistente = inversionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inversión con ID " + id + " no encontrada"));
 
+        // 2. Copiar los datos nuevos sobre la entidad vieja
+        modelMapper.map(inversionDTO, inversionExistente);
+
+        // Aseguramos que el ID se mantenga
+        inversionExistente.setIdInversion(id); // O setIdInversion(id) según tu entidad
+
+        // 3. Guardar
+        Inversion inversionGuardada = inversionRepository.save(inversionExistente);
+
+        // 4. Retornar DTO
+        return modelMapper.map(inversionGuardada, InversionDTO.class);
     }
 
     @Override

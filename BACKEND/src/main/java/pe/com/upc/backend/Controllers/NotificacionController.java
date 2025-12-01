@@ -1,6 +1,7 @@
 package pe.com.upc.backend.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class NotificacionController {
         return ResponseEntity.ok(notificacionService.listar());
     }
 
-    @PostMapping("/registar")
+    @PostMapping("/registrar")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
     public ResponseEntity<NotificacionDTO> registrar(@RequestBody NotificacionDTO notificacionDTO) {
         return ResponseEntity.ok(notificacionService.registrar(notificacionDTO));
@@ -35,10 +36,15 @@ public class NotificacionController {
         return ResponseEntity.ok(notificacionService.findById(id));
     }
 
-    @GetMapping("/actualizar")
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR','CIUDADANO')")
-    public ResponseEntity<NotificacionDTO> actualizar(@RequestBody NotificacionDTO notificacionDTO) {
-        return ResponseEntity.ok(notificacionService.actualizar(notificacionDTO));
+    public ResponseEntity<NotificacionDTO> actualizar(@PathVariable Long id, @RequestBody NotificacionDTO notificacionDTO) {
+        if (notificacionDTO.getId() != null && !id.equals(notificacionDTO.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        NotificacionDTO actualizado = notificacionService.actualizar(id, notificacionDTO);
+
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

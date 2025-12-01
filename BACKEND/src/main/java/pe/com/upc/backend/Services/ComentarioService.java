@@ -43,17 +43,20 @@ public class ComentarioService implements IComentarioService {
 
     @Transactional
     @Override
-    public ComentarioDTO actualizar(ComentarioDTO comentarioDTO) {
-        return comentarioRepository.findById(comentarioDTO.getId())
-                .map(existing -> {
-                    Comentario updatedComentario = modelMapper.map(comentarioDTO, Comentario.class);
-                    return modelMapper.map(comentarioRepository.save(updatedComentario), ComentarioDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Comentario con ID " + comentarioDTO.getId() + " no encontrado"));
-        /*if (comentarioDTO.getId() != null && comentarioRepository.existsById(comentarioDTO.getId())) {
-            return comentarioRepository.save(comentarioDTO);
-        }
-        return null;*/
+    public ComentarioDTO actualizar(Long id, ComentarioDTO comentarioDTO) {
+        // 1. Buscar el comentario existente
+        Comentario comentarioExistente = comentarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comentario con ID " + id + " no encontrado"));
+
+        // 2. Copiar los datos del DTO a la Entidad
+        modelMapper.map(comentarioDTO, comentarioExistente);
+        comentarioExistente.setId(id);
+
+        // 3. Guardar
+        Comentario comentarioGuardado = comentarioRepository.save(comentarioExistente);
+
+        // 4. Retornar DTO
+        return modelMapper.map(comentarioGuardado, ComentarioDTO.class);
     }
 
     @Transactional

@@ -8,6 +8,6 @@ public interface IInversionService {
     public List<InversionDTO> listar();
     public InversionDTO registrar(InversionDTO inversionDTO);
     public InversionDTO findById(Long id);
-    public InversionDTO actualizar(InversionDTO inversionDTO);
+    public InversionDTO actualizar(Long id, InversionDTO inversionDTO);
     public void eliminar(Long id);
 }

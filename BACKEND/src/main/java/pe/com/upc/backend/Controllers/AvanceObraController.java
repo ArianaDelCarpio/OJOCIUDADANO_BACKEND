@@ -1,6 +1,7 @@
 package pe.com.upc.backend.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -35,10 +36,24 @@ public class AvanceObraController {
         return ResponseEntity.ok(avanceObraService.findById(id));
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
-    public ResponseEntity<AvanceObraDTO> actualizar(@RequestBody AvanceObraDTO avanceObraDTO) {
-        return ResponseEntity.ok(avanceObraService.actualizar(avanceObraDTO));
+    public ResponseEntity<AvanceObraDTO> actualizar(@PathVariable Long id, @RequestBody AvanceObraDTO avanceObraDTO) {
+
+        // 1. Validación de seguridad
+        if (avanceObraDTO.getIdAvanceObra() != null && !id.equals(avanceObraDTO.getIdAvanceObra())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Llamada al servicio
+        AvanceObraDTO actualizado = avanceObraService.actualizar(id, avanceObraDTO);
+
+        // 3. Manejo de error
+        if (actualizado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

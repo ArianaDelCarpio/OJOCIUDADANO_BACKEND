@@ -1,6 +1,7 @@
 package pe.com.upc.backend.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +35,17 @@ public class ExpedienteTecnicoController {
         return ResponseEntity.ok(expedienteTecnicoService.findById(id));
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
-    public ResponseEntity<ExpedienteTecnicoDTO> actualizar(@RequestBody ExpedienteTecnicoDTO expedienteTecnicoDTO) {
-        return ResponseEntity.ok(expedienteTecnicoService.actualizar(expedienteTecnicoDTO));
+    public ResponseEntity<ExpedienteTecnicoDTO> actualizar(@PathVariable Long id, @RequestBody ExpedienteTecnicoDTO expedienteTecnicoDTO) {
+        if (expedienteTecnicoDTO.getId() != null && !id.equals(expedienteTecnicoDTO.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ExpedienteTecnicoDTO actualizado = expedienteTecnicoService.actualizar(id, expedienteTecnicoDTO);
+        if (actualizado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

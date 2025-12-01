@@ -8,6 +8,6 @@ public interface IEvidenciaService {
     public List<EvidenciaDTO> listar();
     public EvidenciaDTO registrar(EvidenciaDTO dto);
     public EvidenciaDTO findById(Long id);
-    public EvidenciaDTO actualizar(EvidenciaDTO evidenciaDTO);
+    public EvidenciaDTO actualizar(Long id, EvidenciaDTO evidenciaDTO);
     public void eliminar(Long id);
 }

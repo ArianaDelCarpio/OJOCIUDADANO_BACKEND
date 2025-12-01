@@ -1,6 +1,7 @@
 package pe.com.upc.backend.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,10 +38,25 @@ public class InversionController {
         return ResponseEntity.ok(inversionService.findById(id));
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
-    public ResponseEntity<InversionDTO> actualizar(@RequestBody InversionDTO inversionDTO) {
-        return ResponseEntity.ok(inversionService.actualizar(inversionDTO));
+    public ResponseEntity<InversionDTO> actualizar(@PathVariable Long id, @RequestBody InversionDTO inversionDTO) {
+
+        // 1. Validación: Si el DTO trae ID, debe coincidir con la URL
+        // NOTA: Si tu DTO usa otro nombre (ej: getIdInversion), ajusta el método aquí.
+        if (inversionDTO.getIdInversion() != null && !id.equals(inversionDTO.getIdInversion())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Llamada al servicio
+        InversionDTO actualizado = inversionService.actualizar(id, inversionDTO);
+
+        // 3. Manejo de no encontrado
+        if (actualizado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

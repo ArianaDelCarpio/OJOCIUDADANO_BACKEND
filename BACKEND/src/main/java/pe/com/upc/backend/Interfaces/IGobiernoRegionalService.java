@@ -8,6 +8,6 @@ public interface IGobiernoRegionalService {
     List<GobiernoRegionalDTO> listar();
     GobiernoRegionalDTO registrar(GobiernoRegionalDTO gobiernoRegionalDTO);
     GobiernoRegionalDTO findById(Long id);
-    GobiernoRegionalDTO actualizar(GobiernoRegionalDTO gobiernoRegionalDTO);
+    GobiernoRegionalDTO actualizar(Long id, GobiernoRegionalDTO gobiernoRegionalDTO);
     void eliminar(Long id);
 }

@@ -9,6 +9,6 @@ public interface IComentarioService {
     List<ComentarioDTO> listar();
     ComentarioDTO registrar(ComentarioDTO dto);
     ComentarioDTO findById(Long id);
-    ComentarioDTO actualizar(ComentarioDTO comentarioDTO);
+    ComentarioDTO actualizar(Long id, ComentarioDTO comentarioDTO);
     void eliminar(Long id);
 }

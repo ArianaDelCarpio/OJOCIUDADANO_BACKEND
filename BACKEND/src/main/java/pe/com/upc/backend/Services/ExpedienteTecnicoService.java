@@ -1,5 +1,6 @@
 package pe.com.upc.backend.Services;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,16 +42,19 @@ public class ExpedienteTecnicoService implements IExpedienteTecnicoService {
                 .orElseThrow(() -> new RuntimeException("Expediente Tecnico con ID " + id + " no encontrado"));
     }
 
+    @Transactional
     @Override
-    public ExpedienteTecnicoDTO actualizar(ExpedienteTecnicoDTO expedienteTecnicoDTO) {
-        return expedienteTecnicoRepository.findById(expedienteTecnicoDTO.getId())
-                .map(existing -> {
-                    ExpedienteTecnico updatedExpedienteTecnico = modelMapper.map(expedienteTecnicoDTO, ExpedienteTecnico.class);
-                    return modelMapper.map(expedienteTecnicoRepository.save(updatedExpedienteTecnico), ExpedienteTecnicoDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Expediente Tecnico con ID " + expedienteTecnicoDTO.getId() + " no encontrado"));
+    public ExpedienteTecnicoDTO actualizar(Long id, ExpedienteTecnicoDTO expedienteTecnicoDTO) {
+        ExpedienteTecnico expedienteExistente = expedienteTecnicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Expediente Técnico con ID " + id + " no encontrado"));
+
+        modelMapper.map(expedienteTecnicoDTO, expedienteExistente);
+        expedienteExistente.setId(id);
+        ExpedienteTecnico saved = expedienteTecnicoRepository.save(expedienteExistente);
+        return modelMapper.map(saved, ExpedienteTecnicoDTO.class);
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
         expedienteTecnicoRepository.deleteById(id);

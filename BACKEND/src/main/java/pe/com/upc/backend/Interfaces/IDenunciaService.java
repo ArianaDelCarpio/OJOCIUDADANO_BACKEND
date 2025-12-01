@@ -9,7 +9,7 @@ public interface IDenunciaService {
     public List<DenunciaDTO> listar();
     public DenunciaDTO registrar( DenunciaDTO denunciaDTO);
     public DenunciaDTO findById( Long id);
-    public DenunciaDTO actualizar(DenunciaDTO denunciaDTO);
+    public DenunciaDTO actualizar(Long id, DenunciaDTO denunciaDTO);
     public void eliminar( Long id);
 
 }
