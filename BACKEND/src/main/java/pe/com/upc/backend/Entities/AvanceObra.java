@@ -13,15 +13,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Avance Obra")
 public class AvanceObra {
     @Id
     @Column(name= "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAvanceObra;
-    @Column(name= "Fecha Reporte", length = 100)
+    @Column(name= "Fecha_Reporte", length = 100)
     private LocalDate fechaReporte;
-    @Column(name = "Porcentaje de Avance", length = 100)
+    @Column(name = "Porcentaje_Avance", length = 100)
     private String porcentajeDeAvance;
     @Column(name= "Descripcion", length = 100)
     private String descripcion;

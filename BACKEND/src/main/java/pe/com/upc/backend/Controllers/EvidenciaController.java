@@ -1,6 +1,7 @@
 package pe.com.upc.backend.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class EvidenciaController {
         return ResponseEntity.ok(evidenciaService.listar());
     }
 
-    @PostMapping("/registar")
+    @PostMapping("/registrar")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR','CIUDADANO')")
     public ResponseEntity<EvidenciaDTO> registrar(@RequestBody EvidenciaDTO evidenciaDTO) {
         return ResponseEntity.ok(evidenciaService.registrar(evidenciaDTO));
@@ -35,10 +36,24 @@ public class EvidenciaController {
         return ResponseEntity.ok(evidenciaService.findById(id));
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
-    public ResponseEntity<EvidenciaDTO> actualizar(@RequestBody EvidenciaDTO evidenciaDTO) {
-        return ResponseEntity.ok(evidenciaService.actualizar(evidenciaDTO));
+    public ResponseEntity<EvidenciaDTO> actualizar(@PathVariable Long id, @RequestBody EvidenciaDTO evidenciaDTO) {
+
+        // 1. Validación de seguridad: ID de URL vs ID del cuerpo
+        if (evidenciaDTO.getId() != null && !id.equals(evidenciaDTO.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // 2. Llamada al servicio
+        EvidenciaDTO actualizado = evidenciaService.actualizar(id, evidenciaDTO);
+
+        // 3. Manejo de error si no existe
+        if (actualizado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

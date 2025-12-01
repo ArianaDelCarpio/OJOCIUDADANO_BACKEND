@@ -1,5 +1,6 @@
 package pe.com.upc.backend.Services;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,20 +56,27 @@ public class ObraPublicaService implements IObraPublicaService {
         /*return obraPublicaRepository.findById(id).orElse(null);*/
     }
 
+    @Transactional
     @Override
-    public ObraPublicaDTO actualizar(ObraPublicaDTO obraDTO) {
-        return obraPublicaRepository.findById(obraDTO.getIdObra())
-                .map(existing -> {
-                    ObraPublica updatedObraPublica = modelMapper.map(obraDTO, ObraPublica.class);
-                    return modelMapper.map(obraPublicaRepository.save(updatedObraPublica), ObraPublicaDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Obra Publica con ID " + obraDTO.getIdObra() + " no encontrado"));
-        /*if (obra.getIdObra() != null && obraPublicaRepository.existsById(obra.getIdObra())) {
-            return obraPublicaRepository.save(obra);
-        }
-        return null;*/
+    public ObraPublicaDTO actualizar(Long id, ObraPublicaDTO obraDTO) {
+        // 1. Buscar la obra existente
+        ObraPublica obraExistente = obraPublicaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Obra Pública con ID " + id + " no encontrada"));
+
+        // 2. Copiar los datos del DTO a la Entidad
+        modelMapper.map(obraDTO, obraExistente);
+
+        // Aseguramos que el ID no se pierda
+        obraExistente.setIdObra(id);
+
+        // 3. Guardar
+        ObraPublica obraGuardada = obraPublicaRepository.save(obraExistente);
+
+        // 4. Retornar DTO
+        return modelMapper.map(obraGuardada, ObraPublicaDTO.class);
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
         if(obraPublicaRepository.existsById(id)){

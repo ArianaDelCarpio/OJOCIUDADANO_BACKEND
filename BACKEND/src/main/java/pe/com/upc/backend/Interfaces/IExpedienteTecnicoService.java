@@ -8,6 +8,6 @@ public interface IExpedienteTecnicoService {
     List<ExpedienteTecnicoDTO> listar();
     ExpedienteTecnicoDTO registrar(ExpedienteTecnicoDTO expedienteTecnicoDTO);
     ExpedienteTecnicoDTO findById(Long id);
-    ExpedienteTecnicoDTO actualizar(ExpedienteTecnicoDTO expedienteTecnicoDTO);
+    ExpedienteTecnicoDTO actualizar(Long id, ExpedienteTecnicoDTO expedienteTecnicoDTO);
     void eliminar(Long id);
 }

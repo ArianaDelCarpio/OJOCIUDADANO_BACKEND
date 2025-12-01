@@ -8,6 +8,6 @@ public interface IObraPublicaService {
     List<ObraPublicaDTO> listar();
     ObraPublicaDTO registrar(ObraPublicaDTO obraDTO);
     ObraPublicaDTO findById(Long id);
-    ObraPublicaDTO actualizar(ObraPublicaDTO obraDTO);
+    ObraPublicaDTO actualizar(Long id, ObraPublicaDTO obraDTO);
     void eliminar(Long id);
 }

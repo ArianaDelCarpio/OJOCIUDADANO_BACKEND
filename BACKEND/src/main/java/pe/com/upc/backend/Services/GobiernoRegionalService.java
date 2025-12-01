@@ -1,5 +1,6 @@
 package pe.com.upc.backend.Services;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,16 +42,18 @@ public class GobiernoRegionalService implements IGobiernoRegionalService {
                 .orElseThrow(() -> new RuntimeException("Gobierno Regional con ID " + id + " no encontrado"));
     }
 
+    @Transactional
     @Override
-    public GobiernoRegionalDTO actualizar(GobiernoRegionalDTO gobiernoRegionalDTO) {
-        return gobiernoRegionalrepository.findById(gobiernoRegionalDTO.getId())
-                .map(existing -> {
-                    GobiernoRegional updatedGobiernoRegional = modelMapper.map(gobiernoRegionalDTO, GobiernoRegional.class);
-                    return modelMapper.map(gobiernoRegionalrepository.save(updatedGobiernoRegional), GobiernoRegionalDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Gobierno Regional con ID " + gobiernoRegionalDTO.getId() + " no encontrado"));
+    public GobiernoRegionalDTO actualizar(Long id, GobiernoRegionalDTO gobiernoRegionalDTO) {
+        GobiernoRegional gobiernoExistente = gobiernoRegionalrepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Gobierno Regional con ID " + id + " no encontrado"));
+        modelMapper.map(gobiernoRegionalDTO, gobiernoExistente);
+        gobiernoExistente.setId(id);
+        GobiernoRegional gobiernoGuardado = gobiernoRegionalrepository.save(gobiernoExistente);
+        return modelMapper.map(gobiernoGuardado, GobiernoRegionalDTO.class);
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
         if (gobiernoRegionalrepository.existsById(id)){

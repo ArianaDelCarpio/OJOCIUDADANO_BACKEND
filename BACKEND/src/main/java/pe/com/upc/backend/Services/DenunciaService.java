@@ -45,15 +45,24 @@ public class DenunciaService implements IDenunciaService {
     }
     @Transactional
     @Override
-    public DenunciaDTO actualizar(DenunciaDTO dto){
-        return denunciaRepository.findById(dto.getIdDenuncia())
-                .map(ex -> {
-                    Denuncia e = modelMapper.map(dto, Denuncia.class);
-                    return modelMapper.map(denunciaRepository.save(e), DenunciaDTO.class);
-                })
-                .orElseThrow(() -> new RuntimeException("Denuncia con ID " + dto.getIdDenuncia() + " no encontrada"));
+    public DenunciaDTO actualizar(Long id, DenunciaDTO denunciaDTO) {
+        // 1. Buscar la denuncia existente
+        Denuncia denunciaExistente = denunciaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Denuncia con ID " + id + " no encontrada"));
 
+        // 2. Copiar los datos del DTO a la Entidad
+        modelMapper.map(denunciaDTO, denunciaExistente);
+
+        // Aseguramos que el ID no cambie
+        denunciaExistente.setIdDenuncia(id);
+
+        // 3. Guardar
+        Denuncia denunciaGuardada = denunciaRepository.save(denunciaExistente);
+
+        // 4. Retornar DTO
+        return modelMapper.map(denunciaGuardada, DenunciaDTO.class);
     }
+
     @Transactional
     @Override
     public void eliminar(Long id){

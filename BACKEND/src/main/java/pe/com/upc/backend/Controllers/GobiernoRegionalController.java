@@ -1,6 +1,7 @@
 package pe.com.upc.backend.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +35,17 @@ public class GobiernoRegionalController {
         return ResponseEntity.ok(gobiernoRegionService.findById(id));
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping("/actualizar/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
-    public ResponseEntity<GobiernoRegionalDTO> actualizar(@RequestBody GobiernoRegionalDTO gobiernoRegionalDTO) {
-        return ResponseEntity.ok(gobiernoRegionService.actualizar(gobiernoRegionalDTO));
+    public ResponseEntity<GobiernoRegionalDTO> actualizar(@PathVariable Long id, @RequestBody GobiernoRegionalDTO gobiernoRegionalDTO) {
+        if (gobiernoRegionalDTO.getId() != null && !id.equals(gobiernoRegionalDTO.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        GobiernoRegionalDTO actualizado = gobiernoRegionService.actualizar(id, gobiernoRegionalDTO);
+        if (actualizado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")

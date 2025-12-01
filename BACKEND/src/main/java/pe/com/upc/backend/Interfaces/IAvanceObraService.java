@@ -7,6 +7,6 @@ public interface IAvanceObraService {
     public List<AvanceObraDTO> listar();
     public AvanceObraDTO registrar( AvanceObraDTO avanceObraDTO);
     public AvanceObraDTO findById( Long id);
-    public AvanceObraDTO actualizar(AvanceObraDTO avanceObraDTO);
+    public AvanceObraDTO actualizar(Long id, AvanceObraDTO avanceObraDTO);
     public void eliminar( Long id);
 }
