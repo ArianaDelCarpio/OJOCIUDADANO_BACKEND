@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/listar")
-    @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','DESARROLLADOR','CIUDADANO')")
     public ResponseEntity<List<UserDTO>> Listar() {
         List<UserDTO> usuarios = userService.listar();
         return ResponseEntity.ok(usuarios);
