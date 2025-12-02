@@ -1,18 +1,19 @@
 INSERT INTO roles (name) VALUES ('ROLE_CIUDADANO');
 INSERT INTO roles (name) VALUES ('ROLE_ADMIN');
 INSERT INTO roles (name) VALUES ('ROLE_DESARROLLADOR');
+SELECT setval(pg_get_serial_sequence('roles', 'id'), coalesce(max(id),0) + 1, false) FROM roles;
 
 INSERT INTO users(username, password,nombre,apellido, fecha_registro) VALUES ('ciudadano@gmail.com','$2a$12$1k34YdrmxBkVborQvZLh2OUvX1S80GVVQjZJ5H55y1eez7XV.nV06','Jose','Perez', '2025-11-28');
 INSERT INTO users(username, password,nombre,apellido, fecha_registro) VALUES ('admin@gmail.com','$2a$12$1k34YdrmxBkVborQvZLh2OUvX1S80GVVQjZJ5H55y1eez7XV.nV06','Joseph','Flores', '2025-11-28');
 INSERT INTO users(username, password,nombre,apellido, fecha_registro) VALUES ('desarrollador@gmail.com','$2a$12$1k34YdrmxBkVborQvZLh2OUvX1S80GVVQjZJ5H55y1eez7XV.nV06','Sebastian','Galvez', '2025-11-28');
-
 INSERT INTO users(username, password, nombre, apellido, fecha_registro) VALUES ('maria@gmail.com', '$2a$12$1k34YdrmxBkVborQvZLh2OUvX1S80GVVQjZJ5H55y1eez7XV.nV06', 'Maria', 'Gomez', '2025-11-29');
+SELECT setval(pg_get_serial_sequence('users', 'id'), coalesce(max(id),0) + 1, false) FROM users;
 
 INSERT INTO user_roles (user_id, role_id) VALUES (1, 1); -- user1 with ROLE_USER
 INSERT INTO user_roles (user_id, role_id) VALUES (2, 2); -- admin with ROLE_ADMIN
 INSERT INTO user_roles (user_id, role_id) VALUES (3, 3); -- admin with ROLE_DESARROLLADOR
 INSERT INTO user_roles (user_id, role_id) VALUES (4, 1); -- Maria -> Ciudadano
-
+SELECT setval(pg_get_serial_sequence('user_roles', 'id'), coalesce(max(id),0) + 1, false) FROM user_roles;
 -- 4. GOBIERNOS REGIONALES
 INSERT INTO gobierno_regional (id, nombre, ubicacion, contacto)VALUES (1, 'Gobierno Regional de Lima', 'Av. Kennedy 123, Lima', 'contacto@regionlima.gob.pe');
 
@@ -97,7 +98,7 @@ INSERT INTO avance_obra (id, "fecha_reporte", "porcentaje_avance", "descripcion"
 INSERT INTO avance_obra (id, "fecha_reporte", "porcentaje_avance", "descripcion", "obra_publica_id") VALUES (3, '2025-06-10', '52%', 'Inicio de la fase de pavimentación y asfaltado', 1);
 
 INSERT INTO avance_obra (id, "fecha_reporte", "porcentaje_avance", "descripcion", "obra_publica_id") VALUES (4, '2025-07-01', '100%', 'Obra completada y entregada', 3);
-SELECT setval(pg_get_serial_sequence('comentario', 'id'), coalesce(max(id),0) + 1, false) FROM seguimiento_obra;
+SELECT setval(pg_get_serial_sequence('avance_obra', 'id'), coalesce(max(id),0) + 1, false) FROM avance_obra;
 
 -- 12. COMENTARIOS
 -- Tabla: comentario (generada por defecto)
@@ -125,7 +126,7 @@ INSERT INTO comentario (id, "contenido", "fecha_comentario", "usuario_id", "obra
 INSERT INTO comentario (id, "contenido", "fecha_comentario", "usuario_id", "obra_publica_id") VALUES (8, 'Quedó muy bien el mantenimiento, ahora se ve más seguro.', '2025-07-05', 2, 3);
 
 INSERT INTO comentario (id, "contenido", "fecha_comentario", "usuario_id", "obra_publica_id") VALUES (9, 'Buen trabajo del gobierno regional, sigan así.', '2025-07-06', 4, 3);
-SELECT setval(pg_get_serial_sequence('comentario', 'id'), coalesce(max(id),0) + 1, false) FROM seguimiento_obra;
+SELECT setval(pg_get_serial_sequence('comentario', 'id'), coalesce(max(id),0) + 1, false) FROM comentario;
 
 -- 13. SEGUIMIENTO DE OBRA
 -- Tabla: seguimiento_obra (Generada por defecto por la clase SeguimientoObra)
